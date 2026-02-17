@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="QA Automation Test Suite" verbose="1" parallel="false">
+
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <test name="API Tests - User CRUD Operations">
+        <classes>
+            <class name="com.qaautomationframework.qa.api.UserApiTest"/>
+        </classes>
+    </test>
+
+    <test name="Selenium Tests - Amazon Video Games">
+        <classes>
+            <class name="com.qaautomationframework.qa.selenium.AmazonVideoGamesTest"/>
+        </classes>
+    </test>
+
+</suite>
