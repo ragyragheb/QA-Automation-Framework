@@ -90,7 +90,6 @@ public class WebElementUtils {
     public static String getText(WebDriver driver, By locator) {
         WebElement element = waitForElementToBeVisible(driver, locator);
         String text = element.getText();
-        logger.info("Retrieved text: " + text);
         return text;
     }
 
@@ -105,6 +104,31 @@ public class WebElementUtils {
         Select select = new Select(element);
         select.selectByVisibleText(visibleText);
         logger.info("Selected dropdown option: " + visibleText);
+    }
+
+    public static void selectAutocompleteSuggestion(WebDriver driver, By inputLocator, By suggestionLocator,
+            String value) {
+        try {
+            WebElement input = waitForElementToBeVisible(driver, inputLocator);
+
+            // Disable browser's native autofill to prevent it from blocking the custom
+            // dropdown (used for chrome, firefox works fine without this)
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].setAttribute('autocomplete', 'off');", input);
+
+            new Actions(driver).moveToElement(input).click().perform();
+
+            for (char c : value.toCharArray()) {
+                input.sendKeys(String.valueOf(c));
+            }
+
+            WebElement suggestion = waitForElementToBeVisible(driver, suggestionLocator);
+            new Actions(driver).moveToElement(suggestion).click().perform();
+            logger.info("Selected first autocomplete suggestion for: " + value);
+        } catch (Exception e) {
+            logger.error("Failed to select autocomplete suggestion '" + value + "': " + e.getMessage());
+            throw new RuntimeException("Autocomplete selection failed for: " + value, e);
+        }
     }
 
     public static boolean isElementDisplayed(WebDriver driver, By locator) {
@@ -148,13 +172,25 @@ public class WebElementUtils {
                         return;
                     }
 
-                    // Always click the first element since previous ones are removed after click
                     WebElement element = currentElements.get(0);
                     scrollToElement(driver, element);
-                    element.click();
+                    try {
+                        element.click();
+                    } catch (ElementNotInteractableException e) {
+                        logger.warn("Element not interactable, using JavaScript click");
+                        JavascriptExecutor js = (JavascriptExecutor) driver;
+                        js.executeScript("arguments[0].click();", element);
+                    }
                     clicked = true;
                     clickedCount++;
                     logger.info("Clicked element " + clickedCount + " of " + totalElements);
+
+                    // Wait for DOM to stabilize after click
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
 
                 } catch (StaleElementReferenceException | ElementClickInterceptedException e) {
                     attempts++;
@@ -164,7 +200,7 @@ public class WebElementUtils {
                     }
                     logger.warn("Retry attempt " + attempts);
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(1000);
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                     }

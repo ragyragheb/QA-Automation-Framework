@@ -227,9 +227,11 @@ Supported browsers: `chrome`, `firefox`, `edge`
 3. Apply Free Shipping filter
 4. Apply New Condition filter
 5. Sort by Price: High to Low
-6. Add up to 5 products priced below 15,000 EGP to cart
-7. Validate that the sum of individual item prices matches the cart subtotal
-8. Delete all added products from cart (cleanup)
+6. Add products priced below 15,000 EGP to cart — **currently limited to the first 5 items** (configurable via `addProductsBelow15K(maxItems)`)
+7. Collect the cart subtotal item by item from the cart page
+8. Proceed to checkout, add a shipping address, and select Buy Now Pay Later with Valu
+9. Verify that the order total on the checkout page matches the cart subtotal plus shipping fees
+10. **Delete all added products from cart at the end of each test run** (cleanup step ensures the cart is empty for the next run)
 
 ### API Tests: User CRUD Operations
 

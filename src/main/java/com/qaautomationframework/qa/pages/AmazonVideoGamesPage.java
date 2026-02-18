@@ -19,7 +19,7 @@ public class AmazonVideoGamesPage extends BasePage {
     private final By sortDropdown = By.cssSelector(".a-button-text.a-declarative");
     private final By highToLowOption = By.id("s-result-sort-select_2");
     private final By productCards = By.cssSelector("div[data-component-type='s-search-result']");
-    private final By productName = By.cssSelector("h2.a-size-base-plus");
+    private final By productName = By.cssSelector("h2.a-size-base");
     private final By productPrice = By.cssSelector("span.a-price-whole");
     private final By addToCartButton = By.cssSelector("button[name='submit.addToCart']");
     private final By nextPageButton = By.cssSelector("a.s-pagination-next");
@@ -164,6 +164,7 @@ public class AmazonVideoGamesPage extends BasePage {
 
     public void deleteAddedProductsFromCart() {
         WebElementUtils.clickElement(driver, cartIcon);
+        waitForPageLoad();
         WebElementUtils.clickElements(driver, deleteButton);
     }
 }

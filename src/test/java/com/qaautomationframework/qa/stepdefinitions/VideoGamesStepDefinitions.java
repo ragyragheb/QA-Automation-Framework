@@ -2,6 +2,7 @@ package com.qaautomationframework.qa.stepdefinitions;
 
 import com.qaautomationframework.qa.config.ConfigReader;
 import com.qaautomationframework.qa.pages.AmazonCartPage;
+import com.qaautomationframework.qa.pages.AmazonCheckoutPage;
 import com.qaautomationframework.qa.pages.AmazonLoginPage;
 import com.qaautomationframework.qa.pages.AmazonVideoGamesPage;
 import com.qaautomationframework.qa.utils.DriverManager;
@@ -18,6 +19,8 @@ public class VideoGamesStepDefinitions {
     private AmazonLoginPage loginPage;
     private AmazonVideoGamesPage videoGamesPage;
     private AmazonCartPage cartPage;
+    private AmazonCheckoutPage checkoutPage;
+    private double cartSubtotal;
 
     @Before("not @api")
     public void setUp() {
@@ -26,6 +29,7 @@ public class VideoGamesStepDefinitions {
         loginPage = new AmazonLoginPage(driver);
         videoGamesPage = new AmazonVideoGamesPage(driver);
         cartPage = new AmazonCartPage(driver);
+        checkoutPage = new AmazonCheckoutPage(driver);
     }
 
     @After("not @api")
@@ -44,7 +48,7 @@ public class VideoGamesStepDefinitions {
         String url = ConfigReader.getAmazonUrl();
         String email = ConfigReader.getAmazonEmail();
         String password = ConfigReader.getAmazonPassword();
-        
+
         loginPage.login(url, email, password);
     }
 
@@ -93,6 +97,39 @@ public class VideoGamesStepDefinitions {
 
         boolean isValid = cartPage.validateCartTotal();
         assert isValid : "Cart total does not match items total";
+    }
+
+    @When("User proceeds to checkout")
+    public void userProceedsToCheckout() {
+        cartPage.navigateToCart();
+        cartSubtotal = cartPage.getItemsTotal();
+        System.out.println("Cart Items Subtotal: " + cartSubtotal + " EGP");
+        cartPage.proceedToCheckout();
+    }
+
+    @When("User adds a new shipping address")
+    public void userSelectsAShippingAddress() {
+        checkoutPage.dismissPrimeOfferIfPresent();
+        checkoutPage.addNewAddress("Ragy Ragheb", "01094778318", "Abdou Pasha", "6",
+                "El-Abaseya", "Abbaseyah Square", "Abbaseyah Metro Station");
+    }
+
+    @When("User selects Buy Now Pay Later with Valu as payment method")
+    public void userSelectsBuyNowPayLaterWithValuAsPaymentMethod() {
+        checkoutPage.selectBuyNowPayLaterWithValu();
+    }
+
+    @Then("User verifies total amount matches items total plus shipping fees")
+    public void userVerifiesTotalAmountMatchesItemsTotalPlusShippingFees() {
+        double shippingFee = checkoutPage.getShippingFee();
+        double orderTotal = checkoutPage.getOrderTotal();
+
+        System.out.println("Cart Subtotal (from cart page): " + cartSubtotal + " EGP");
+
+        boolean isValid = checkoutPage.verifyTotalAmount(cartSubtotal);
+        assert isValid : "Order total (" + orderTotal + " EGP) does not match cart subtotal ("
+                + cartSubtotal + " EGP) + shipping fee (" + shippingFee + " EGP) = "
+                + (cartSubtotal + shippingFee) + " EGP";
     }
 
     @Then("User should delete added products from cart")

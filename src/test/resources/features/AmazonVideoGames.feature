@@ -12,5 +12,8 @@ Feature: Amazon Video Games Shopping
     And User applies New Condition filter
     And User sorts by Price High to Low
     And User adds products below 15K to cart
-    And User validates items total against cart total
-    Then User should delete added products from cart
+    And User proceeds to checkout
+    And User adds a new shipping address
+    And User selects Buy Now Pay Later with Valu as payment method
+    Then User verifies total amount matches items total plus shipping fees
+    And User should delete added products from cart
