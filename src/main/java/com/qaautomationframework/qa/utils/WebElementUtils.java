@@ -67,6 +67,7 @@ public class WebElementUtils {
             } catch (StaleElementReferenceException e) {
                 logger.warn("Stale element, retrying... Attempt: " + (attempts + 1));
                 attempts++;
+
             } catch (Exception e) {
                 logger.error("Error clicking element: " + e.getMessage());
                 throw e;

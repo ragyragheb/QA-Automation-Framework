@@ -42,7 +42,7 @@ public class DriverManager {
                     chromeOptions.addArguments("--disable-notifications");
                     chromeOptions.addArguments("--disable-popup-blocking");
                     chromeOptions.addArguments("--disable-blink-features=AutomationControlled");
-                    chromeOptions.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+                    chromeOptions.setExperimentalOption("excludeSwitches", new String[] { "enable-automation" });
                     driver.set(new ChromeDriver(chromeOptions));
                     break;
 

@@ -16,7 +16,8 @@ public class AmazonCheckoutPage extends BasePage {
 
     private final By primeOfferNoThanks = By.cssSelector("a.a-button-text");
 
-    private final By changeAddressButton = By.xpath("//a[contains(@data-csa-c-slot-id,'checkout-change-shipaddressselect')]");
+    private final By changeAddressButton = By
+            .xpath("//a[contains(@data-csa-c-slot-id,'checkout-change-shipaddressselect')]");
     private final By addNewAddressButton = By.id("add-new-address-desktop-sasp-tango-link");
 
     private final By fullNameField = By.id("address-ui-widgets-enterAddressFullName");
@@ -30,11 +31,14 @@ public class AmazonCheckoutPage extends BasePage {
     private final By continueButton = By.xpath("//input[contains(@data-testid,'continue-button')]");
 
     private final By buyNowPayLaterWithValu = By.xpath("//input[contains(@value,'Loan')]");
-    private final By useThisPaymentButton = By.cssSelector("input[name='ppw-widgetEvent:SetPaymentPlanSelectContinueEvent']");
-    
+    private final By useThisPaymentButton = By
+            .cssSelector("input[name='ppw-widgetEvent:SetPaymentPlanSelectContinueEvent']");
+
     private final By orderTotal = By.xpath("(//div/div[(contains(@class,'order-summary-line-definition'))])[4]");
-    private final By shippingFee = By.xpath("//input[contains(@value,'SHIPPING_TAX_INCLUSIVE')]/following-sibling::span");
-    private final By itemsSubtotal = By.xpath("//input[contains(@value,'ITEMS_TAX_INCLUSIVE')]/following-sibling::span");
+    private final By shippingFee = By
+            .xpath("//input[contains(@value,'SHIPPING_TAX_INCLUSIVE')]/following-sibling::span");
+    private final By itemsSubtotal = By
+            .xpath("//input[contains(@value,'ITEMS_TAX_INCLUSIVE')]/following-sibling::span");
     private final By freeShippingLabel = By.xpath("//div[contains(text(),'Free Delivery')]");
 
     public void dismissPrimeOfferIfPresent() {
@@ -46,7 +50,7 @@ public class AmazonCheckoutPage extends BasePage {
     }
 
     public void addNewAddress(String fullName, String phone, String street, String building,
-                              String city, String district, String landmark) {
+            String city, String district, String landmark) {
         try {
             WebElementUtils.clickElement(driver, changeAddressButton);
             WebElementUtils.clickElement(driver, addNewAddressButton);
@@ -87,9 +91,9 @@ public class AmazonCheckoutPage extends BasePage {
     public double getOrderTotal() {
         try {
             String totalText = WebElementUtils.getText(driver, orderTotal)
-                .replace("EGP", "")
-                .replace(",", "")
-                .trim();
+                    .replace("EGP", "")
+                    .replace(",", "")
+                    .trim();
             double total = Double.parseDouble(totalText);
             logger.info("Order total: " + total + " EGP");
             return total;
@@ -103,9 +107,9 @@ public class AmazonCheckoutPage extends BasePage {
         try {
             if (WebElementUtils.isElementDisplayed(driver, shippingFee)) {
                 String feeText = WebElementUtils.getText(driver, shippingFee)
-                    .replace("EGP", "")
-                    .replace(",", "")
-                    .trim();
+                        .replace("EGP", "")
+                        .replace(",", "")
+                        .trim();
                 double fee = Double.parseDouble(feeText);
                 logger.info("Shipping fee: " + fee + " EGP");
                 return fee;
@@ -122,9 +126,9 @@ public class AmazonCheckoutPage extends BasePage {
     public double getItemsSubtotal() {
         try {
             String subtotalText = WebElementUtils.getText(driver, itemsSubtotal)
-                .replace("EGP", "")
-                .replace(",", "")
-                .trim();
+                    .replace("EGP", "")
+                    .replace(",", "")
+                    .trim();
             double subtotal = Double.parseDouble(subtotalText);
             logger.info("Items subtotal: " + subtotal + " EGP");
             return subtotal;
@@ -150,10 +154,10 @@ public class AmazonCheckoutPage extends BasePage {
 
         if (isCorrect) {
             logger.info("Total amount verified: " + actualTotal + " EGP (Subtotal: " +
-                       cartSubtotal + " + Shipping: " + shippingFee + ")");
+                    cartSubtotal + " + Shipping: " + shippingFee + ")");
         } else {
             logger.error("Total amount mismatch! Expected: " + expectedTotal +
-                        " EGP, Actual: " + actualTotal + " EGP");
+                    " EGP, Actual: " + actualTotal + " EGP");
         }
         return isCorrect;
     }
